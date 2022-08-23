@@ -1,0 +1,254 @@
+/* *{
+	margin: 0;
+	padding: 0;
+} */
+ 
+
+*::-webkit-scrollbar {
+    width: 6px;;
+    stroke-width: 0px;
+    border-radius: 3px;
+  }
+   
+  *::-webkit-scrollbar-track {
+    box-shadow: white;
+  }
+   
+  *::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 0px solid slategrey;
+  }
+  
+#images-list {
+    height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+#footer-main {
+  display: flex;
+  width: 80%;
+}
+
+#images-list-parent {
+    height: 518px;
+    width: auto;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #eee;
+}
+
+#show-btn {
+  margin: 20px 0px 0px 0px;
+  vertical-align: middle;
+    text-align: center;
+    padding: 0px;
+    height: 30px;
+    width: 150px;
+}
+
+#header {
+  text-align: left;
+  margin-top: 5px;
+  margin-left: 15px;
+  width: 100%;
+}
+
+.window-btn-parent {
+  height: 10px;
+  text-align: center;
+  padding: 0;
+  display: flex;
+}
+
+.window-btn {
+  text-align: center;
+  height: 25px;
+  width: 25px;
+  margin-top: 3px;
+  margin-right: 3px;
+  padding: 0px 0px 0px 0px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: [menu] minmax(50px, 270px) [body] auto [right] 5px;
+    grid-template-rows: [title-bar] 30px [row1] 90% [row2] 5%;
+  }
+
+  .title-parent {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: title-bar;
+    grid-row-end: title-bar;
+    background-color: gray;
+    display: flex;
+    margin-right: -5px;
+
+  }
+
+  #save-btn {
+    width: 120px;
+    vertical-align: middle;
+    text-align: center;
+    padding: 0px;
+    height: 30px;
+    margin: 20px 0% 0px 10%;
+  }
+
+  #resize-width {
+    height: 20px;
+    width: 100px;
+  }
+
+  #resize-height {
+    height: 20px;
+    width: 100px;
+  }
+
+  #slides-parent {
+
+    display: block;
+    width: 210px; 
+    margin: 10px;
+  }
+
+.grid-menu {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: row1;
+    grid-row-end: row2;
+    margin-top: 10px;
+}
+
+.image-parent {  
+    width: 200px;
+    align-self: inherit;  
+  }
+ 
+  .logo-parent {
+    height: 20px;
+    text-align: left; 
+    margin: 20px 0px 0px 5px;
+    padding: 0px;
+  }
+
+.grid-main {
+    grid-column-start: body;
+    grid-column-end: body;
+    grid-row-start: row1;
+    grid-row-end: row1;
+    margin-top: 48px;
+}
+.grid-footer{
+    grid-column-start: body;
+    grid-column-end: body;
+    grid-row-start: row2;
+    grid-row-end: row2;
+    display: flex;
+    margin: 10px 0px 0px 0px;
+    height: 20px;
+}
+ 
+ 
+.frame{
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: #353131;
+	margin-top: 0px;
+	padding: 3px 5px;
+	border: 4px dashed #526369;
+	border-radius: 20px;
+	box-shadow: 5px 5px 10px #353535;
+}
+
+
+body {
+    padding: 0rem 0rem  0rem  0rem;
+     
+}
+
+.preview{
+    height: 100%;
+	  width: 100%;
+}
+
+
+.editor{ 
+    position: relative;
+    left: 0px;
+    top: 0px;
+}
+
+ 
+.preview>div{
+	height: 100%;
+	width: 100%; 
+
+}
+
+
+.slider {
+	width: 12%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+	margin-top: 15px;
+}
+
+  
+
+
+.slider {
+	width: 12%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+	margin-top: 15px;
+}
+
+.thumbnail{
+
+	width: 100%;
+	opacity: 0.6;
+	transition: 1.5s;
+}
+
+.thumbnail:hover {
+    position:relative;
+	top: -10px;
+    height:auto;
+    z-index:999;
+	cursor: pointer;
+	opacity: 1;
+}
+
+#image-add-icon:hover {
+    position:relative;
+	top: -2px;
+    height:auto;
+    z-index:999;
+	cursor: pointer;
+	opacity: 0.4;
+}
+
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.fader {
+	animation: fadein 1s;
+}
+
+
+img.selected {
+	opacity: 1;
+}

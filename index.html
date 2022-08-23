@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./assets/styles/main.css"/>
+    <link href="./assets/styles/font-awesome.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./dist/drawerJs.css"/>
+    <script src="./dist/drawerJs.standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <div class="grid-container"> 
+        <div class="grid-menu">
+            <div  class="container">
+                <div id="my-row" class="row">
+                    <div id="images-list-parent" class="col-12"> 
+                        <ul id="images-list" class="list-group">
+                        </ul> 
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div id="my-main" class="grid-main">
+            <div class="preview">
+                <div id="canvas-editor" class="editor"></div>
+            </div> 
+        </div>
+         <div class="grid-footer">
+              <div id="footer-main">
+                <div id="slides-parent">
+                    <div>
+                        <label id="label1" class="my-label" style="width:100px;"> Image width: </label>
+                        <input onchange="onImageDimensionsChanged()" id="resize-width" type="text" min="300" value="500" >
+                        
+                     </div>
+
+                    <div>
+                        <label id="label2" class="my-label" style="width:100px;"> Image height: </label>
+                        <input onchange="onImageDimensionsChanged()" id="resize-height" type="text" min="300" value="500">
+                        
+                    </div> 
+                    
+                </div>
+                <div class="btn btn-info" id="show-btn" onclick="showDrawingArea()" >Show Work Area</div>
+              </div>
+               <div class="btn btn-success" onclick="downloadEditingImage()" id="save-btn"> Save Image</div>
+         </div>
+    </div> 
+    
+</body>
+
+
+<script> 
+ 
+  
+    addEventListener('resize', function(e){ 
+            var menu = document.getElementById('images-list-parent');
+            var menuSize = menu.offsetWidth;
+ 
+            window.drawer.api.setSize(e.target.innerWidth - menuSize - 15, e.target.innerHeight - 222);
+ 
+            console.log(menuSize);
+               
+            var images = document.getElementsByClassName('cmpTexts');
+
+            menu.style.height = `${e.target.innerHeight - 130}px`;
+
+			if(parseInt(window.innerWidth) > 700){ 
+                addImagesNames(images)
+                $('#slides-parent>div>#label1').text("Image width:"); 
+                $('#slides-parent>div>#label2').text("Image height:"); 
+                $('#show-btn').show(); 
+			}
+
+			if(parseInt(window.innerWidth) < 700){
+				for(let i = 0; i < images.length; i++){
+					images[i].innerText = " ";
+				}
+
+                $('#slides-parent>div>#label1').text(""); 
+                $('#slides-parent>div>#label2').text(""); 
+ 
+			} 
+    })
+
+    function addImagesNames(images){
+	  
+		for(let i = 0; i < images.length; i++){
+			images[i].innerText = `Images ${i + 1}`;
+		}
+   
+    }
+    
+    function onImageDimensionsChanged(){
+        var width = $('#resize-width').val();
+        var height = $('#resize-height').val(); 
+        drawExportArea(width, height);
+        window.drawer.api.setBackgroundImageFromUrl(`https://dummyimage.com/${width}x${height}/ffffff/ffffff.png`, {'imagePosition' : 'top-left'});
+    }
+
+    function showDrawingArea(){
+        var width = $('#resize-width').val();
+        var height = $('#resize-height').val(); 
+        drawExportArea(width, height);
+    }
+
+    function drawExportArea(width, height){
+        var c = document.getElementsByClassName("upper-canvas")[0];
+        var ctx = c.getContext("2d");
+        ctx.beginPath();
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.setLineDash([6]);
+        ctx.rect(1, 1, width/1.25, height/1.25);
+        ctx.stroke();
+    }
+
+    function onImageButtonClick (name, url) {
+      
+       var options = {};
+       options.scaleDownLargeImage = false;
+       options.left = 0;
+       options.top = 0;
+       options.scaleX = 1/1.25;
+       options.scaleY = 1/1.25;
+
+       var img = new Image();
+       img.src = url;
+       window.drawer.api.addImage(img, options); 
+   }
+ 
+    function getItem(n) {
+            return `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="image-parent"  >
+                            <img width="30" height="30" src="${n.imgPath}" class="img-fluid" alt="quixote">
+                            <span class="cmpTexts"> ${n.name} </span>
+                        </div>
+                        <div id="image-add-icon" onclick="onImageButtonClick('${n.name}', '${n.imgPath}')"> 
+                            <i class="fa fa-plus" aria-hidden="true"></i>    
+                        </div>
+                        
+                    </li>`;
+                }
+
+    $(document).ready(function () {
+        var drawerPlugins = [
+            // Drawing tools
+            'Pencil',
+            'Eraser',
+            'Text',
+            'Line',
+            'ArrowOneSide',
+            'ArrowTwoSide',
+            'Triangle',
+            'Rectangle',
+            'Circle',
+            'Image',
+            'BackgroundImage',
+            'Polygon',
+            'ImageCrop',
+
+            // Drawing options
+            //'ColorHtml5',
+            'Color',
+            'ShapeBorder',
+            'BrushSize',
+            'OpacityOption',
+            'LineWidth',
+            'StrokeWidth',
+       
+            'ShapeContextMenu',
+            'CloseButton',
+            'OvercanvasPopup',
+            'OpenPopupButton',
+            'MinimizeButton',
+            'ToggleVisibilityButton',
+            'MovableFloatingMode',
+            'FullscreenModeButton',
+
+            'TextLineHeight',
+            'TextAlign',
+             'Resize',
+            'TextFontFamily',
+            'TextFontSize',
+            'TextFontWeight',
+            'TextFontStyle',
+            'TextDecoration',
+            'TextColor',
+            'TextBackgroundColor'
+        ];
+ 
+        window.drawer = new DrawerJs.Drawer(null, {
+            exitOnOutsideClick: false,
+            plugins: drawerPlugins,
+            corePlugins: [
+                'Zoom' // use null here if you want to disable Zoom completely
+            ],
+            pluginsConfig: {
+                Image: {
+                    scaleDownLargeImage: true,
+                    maxImageSizeKb: 10240, //1MB
+                    cropIsActive: true
+                },
+                BackgroundImage: {
+                    scaleDownLargeImage: true,
+                    maxImageSizeKb: 10240, //1MB 
+                    imagePosition: 'center',  // one of  'center', 'stretch', 'top-left', 'top-right', 'bottom-left', 'bottom-right'
+                    acceptedMIMETypes: ['image/jpeg', 'image/png', 'image/gif'] ,
+                    dynamicRepositionImage: true,
+                    dynamicRepositionImageThrottle: 100,
+                    cropIsActive: false
+                },
+                Text: {
+                    editIconMode : false,
+                    editIconSize : 'large',
+                    defaultValues : {
+                      fontSize: 72,
+                      lineHeight: 2,
+                      textFontWeight: 'bold'
+                    },
+                    predefined: {
+                      fontSize: [8, 12, 14, 16, 32, 40, 72],
+                      lineHeight: [1, 2, 3, 4, 6]
+                    }
+                },
+                Zoom: {
+                    enabled: true, 
+                    showZoomTooltip: true, 
+                    useWheelEvents: true,
+                    zoomStep: 1.05, 
+                    defaultZoom: 1, 
+                    maxZoom: 32,
+                    minZoom: 1, 
+                    smoothnessOfWheel: 0,
+                    //Moving:
+                    enableMove: true,
+                    enableWhenNoActiveTool: true,
+                    enableButton: true
+                }
+            },
+            toolbars: {
+                drawingTools: {
+                    position: 'top',         
+                    positionType: 'outside',
+                    customAnchorSelector: '#custom-toolbar-here',  
+                    compactType: 'scrollable',   
+                    hidden: false,     
+                    toggleVisibilityButton: false,
+                    fullscreenMode: {
+                        position: 'top', 
+                        hidden: false,
+                        toggleVisibilityButton: false
+                    }
+                },
+                toolOptions: {
+                    position: 'bottom', 
+                    positionType: 'outside',
+                    compactType: 'scrollable',
+                    hidden: false,
+                    toggleVisibilityButton: false,
+                    fullscreenMode: {
+                        position: 'bottom', 
+                        compactType: 'popup',
+                        hidden: false,
+                        toggleVisibilityButton: false
+                    }
+                },
+                settings : {
+                    position : 'right', 
+                    positionType: 'outside',					
+                    compactType : 'scrollable',
+                    hidden: true,	
+                    toggleVisibilityButton: false,
+                    fullscreenMode: {
+                        position : 'right', 
+                        hidden: false,
+                        toggleVisibilityButton: false
+                    }
+                }
+            },
+             defaultImageUrl: '/examples/redactor/images/drawer.jpg',
+            // defaultActivePlugin : { name : 'Pencil', mode : 'lastUsed'},
+            debug: true,
+            activeColor: '#999',
+            transparentBackground: true,
+            align: 'floating',  //one of 'left', 'right', 'center', 'inline', 'floating'
+            lineAngleTooltip: { enabled: true, color: 'blue',  fontSize: 15}
+        }, 900, 500);
+  
+        $('#canvas-editor').append(window.drawer.getHtml());
+
+        window.drawer.onInsert(); 
+
+        window.drawer.api.startEditing();
+
+        for (let index = 1; index < 20; index++) {
+            var randomColor = Math.floor(Math.random()*16777215).toString(16);
+            var obj = { 
+                        "name" : `Image ${index}`, 
+                        "imgPath" : `https://dummyimage.com/300/${randomColor}/fff.png&text=Image ${index}` 
+                      };
+        
+              
+            var item = getItem(obj); 
+
+            $("#images-list").append(item)
+            
+        }
+
+        window.drawer.api.setSize(700, 425); 
+        window.drawer.api.setBackgroundImageFromUrl(`https://dummyimage.com/680x460/ffffff/ffffff.png`, {'imagePosition' : 'top-left'});
+    
+    });
+   
+    function downloadEditingImage() {
+        var width = $('#resize-width').val();
+        var height = $('#resize-height').val(); 
+        var oldH = window.drawer.height;
+        var oldW = window.drawer.width;
+      
+        window.drawer.api.setSize(width/1.25,  height/1.25);
+        var link = document.createElement('a');
+        link.download = 'New Data.png';
+        var imgData = window.drawer.api.getCanvasAsImage(); 
+        link.href = imgData
+        link.click();
+        setTimeout(function() { 
+            window.drawer.api.setSize(oldW,  oldH); 
+        },1); 
+        
+    }
+ 
+    function onSaveImage() { 
+        downloadEditingImage(); 
+    }
+
+    function onThumbnailClick(el) {
+        
+        $('.thumbnail').removeClass('selected');
+        $(el).addClass('selected');
+    
+    }
+
+   
+ 
+</script>
+
+<script type="text/javascript" src="./js/slider.js" ></script>
+<script type="text/javascript"> sliderFunctionality() </script>
+
+
+</html>
